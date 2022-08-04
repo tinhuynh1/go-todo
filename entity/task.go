@@ -18,9 +18,6 @@ func GetById(id int) (task *model.Task, err error) {
 	if err != nil {
 		return
 	}
-	if task != nil {
-		return
-	}
 	return
 
 }

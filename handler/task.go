@@ -8,12 +8,18 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func GetAllTask(c *gin.Context) {
 	tasks, err := entity.GetAllTask()
+	if len(tasks) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"msg": "tasks is empty",
+		})
+	}
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"data": err.Error(),
 		})
 	}
@@ -25,12 +31,25 @@ func GetAllTask(c *gin.Context) {
 
 func GeById(c *gin.Context) {
 	idStr := c.Param("id")
-	id, _ := strconv.Atoi(idStr)
-
-	task, err := entity.GetById(id)
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"data": err.Error(),
+			"err": err.Error(),
+		})
+		return
+	}
+
+	task, err := entity.GetById(id)
+	if err == gorm.ErrRecordNotFound {
+		c.JSON(http.StatusNotFound, gin.H{
+			"msg": "task not found",
+			"id":  id,
+		})
+		return
+	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
 		})
 		return
 	}
@@ -43,12 +62,14 @@ func GeById(c *gin.Context) {
 func CreateTask(c *gin.Context) {
 	var data model.Task
 	if err := c.ShouldBind(&data); err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err,
+		})
 	}
 	err := entity.CreateTask(data)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"data": err.Error(),
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
 		})
 		return
 	}
@@ -59,11 +80,17 @@ func CreateTask(c *gin.Context) {
 
 func DeleteById(c *gin.Context) {
 	idStr := c.Param("id")
-	id, _ := strconv.Atoi(idStr)
-
-	err := entity.DeleteById(id)
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+		})
+		return
+	}
+
+	err = entity.DeleteById(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
@@ -75,11 +102,17 @@ func DeleteById(c *gin.Context) {
 
 func DoneTaskById(c *gin.Context) {
 	idStr := c.Param("id")
-	id, _ := strconv.Atoi(idStr)
-
-	err := entity.DoneTaskById(id)
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+		})
+		return
+	}
+
+	err = entity.DoneTaskById(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
@@ -91,9 +124,15 @@ func DoneTaskById(c *gin.Context) {
 
 func RejectTaskById(c *gin.Context) {
 	idStr := c.Param("id")
-	id, _ := strconv.Atoi(idStr)
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+		})
+		return
+	}
 
-	err := entity.RejectTaskById(id)
+	err = entity.RejectTaskById(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"data": err.Error(),
