@@ -3,17 +3,14 @@ package respmodel
 import (
 	"go-todo/model"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Task struct {
-	Id        int            `json:"id"`
-	Title     string         `json:"title"`
-	Status    string         `json:"status"`
-	CreatedAt time.Time      `json:"create_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `json:"deleted_at"`
+	Id        int       `json:"id"`
+	Title     string    `json:"title"`
+	Status    string    `json:"status"`
+	CreatedAt time.Time `json:"create_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func NewTask(task *model.Task) Task {
