@@ -2,6 +2,7 @@ package handler
 
 import (
 	"go-todo/entity"
+	uerr "go-todo/err"
 	"go-todo/model"
 	"go-todo/model/respmodel"
 	"net/http"
@@ -14,14 +15,11 @@ import (
 func GetAllTask(c *gin.Context) {
 	tasks, err := entity.GetAllTask()
 	if len(tasks) == 0 {
-		c.JSON(http.StatusNotFound, gin.H{
-			"msg": "tasks is empty",
-		})
+		uerr.NotFoundErr(c)
+		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"data": err.Error(),
-		})
+		uerr.InternalErr(c, err)
 	}
 	resp := respmodel.NewListTask(tasks)
 	c.JSON(http.StatusOK, gin.H{
@@ -33,24 +31,17 @@ func GeById(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-		})
+		uerr.BadRequestErr(c, err, "Id invalid")
 		return
 	}
 
 	task, err := entity.GetById(id)
 	if err == gorm.ErrRecordNotFound {
-		c.JSON(http.StatusNotFound, gin.H{
-			"msg": "task not found",
-			"id":  id,
-		})
+		uerr.NotFoundErr(c)
 		return
 	}
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-		})
+		uerr.InternalErr(c, err)
 		return
 	}
 	resp := respmodel.NewTask(task)
@@ -62,15 +53,12 @@ func GeById(c *gin.Context) {
 func CreateTask(c *gin.Context) {
 	var data model.Task
 	if err := c.ShouldBind(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err,
-		})
+		uerr.BadRequestErr(c, err, "Data invalid")
+		return
 	}
 	err := entity.CreateTask(data)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err.Error(),
-		})
+		uerr.InternalErr(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -82,17 +70,13 @@ func DeleteById(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-		})
+		uerr.BadRequestErr(c, err, "Id invalid")
 		return
 	}
 
 	err = entity.DeleteById(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		uerr.InternalErr(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -104,17 +88,13 @@ func DoneTaskById(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-		})
+		uerr.BadRequestErr(c, err, "Id invalid")
 		return
 	}
 
 	err = entity.DoneTaskById(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		uerr.InternalErr(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -126,17 +106,13 @@ func RejectTaskById(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
-		})
+		uerr.BadRequestErr(c, err, "Id invalid")
 		return
 	}
 
 	err = entity.RejectTaskById(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"data": err.Error(),
-		})
+		uerr.InternalErr(c, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
