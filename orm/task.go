@@ -15,10 +15,6 @@ const (
 	RejectStatusTask = "reject"
 )
 
-func init() {
-	Task = task{}
-}
-
 func (task) List() (task []model.Task, err error) {
 	err = db.GetDB().Model(&task).Find(&task).Error
 	return

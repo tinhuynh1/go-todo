@@ -53,7 +53,7 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": "pong",
+		"message": "Create task successfully!",
 	})
 }
 
@@ -64,12 +64,12 @@ func DeleteById(c *gin.Context) {
 	err := entity.DeleteById(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"data": err.Error(),
+			"error": err.Error(),
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": "delete task success!",
+		"message": "Task has been deleted",
 	})
 }
 
@@ -80,12 +80,12 @@ func DoneTaskById(c *gin.Context) {
 	err := entity.DoneTaskById(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"data": err.Error(),
+			"error": err.Error(),
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": "`",
+		"message": "Task has been done",
 	})
 }
 
@@ -101,6 +101,6 @@ func RejectTaskById(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": "pong",
+		"message": "Task has been rejected",
 	})
 }

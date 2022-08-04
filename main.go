@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	db.Init()
 	r := gin.Default()
 	todo := r.Group("/api/task")
@@ -15,9 +16,9 @@ func main() {
 		todo.GET("", handler.GetAllTask)
 		todo.GET("/:id", handler.GeById)
 		todo.POST("", handler.CreateTask)
-		todo.DELETE("/:id", handler.GetAllTask)
-		todo.PUT("/:id/done", handler.GetAllTask)
-		todo.PUT("/:id/reject", handler.GetAllTask)
+		todo.DELETE("/:id", handler.DeleteById)
+		todo.PUT("/:id/done", handler.DoneTaskById)
+		todo.PUT("/:id/reject", handler.RejectTaskById)
 	}
 	r.Run()
 }

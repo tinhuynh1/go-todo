@@ -1,0 +1,6 @@
+postgresql:
+    host: ec2-34-198-186-145.compute-1.amazonaws.com
+    user: mzfcuaonroqqmk
+    password: 6a60231135869296de8caa89a5480842e4b0b71a7516634103bbeda4db6a1bc2
+    port: 5432
+    database: dbse3qnirm7bob 
