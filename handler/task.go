@@ -119,3 +119,18 @@ func RejectTaskById(c *gin.Context) {
 		"message": "Task has been rejected",
 	})
 }
+
+func TestOrm(c *gin.Context) {
+	tasks, err := entity.TestOrm()
+	if len(tasks) == 0 {
+		uerr.NotFoundErr(c)
+		return
+	}
+	if err != nil {
+		uerr.InternalErr(c, err)
+	}
+	resp := respmodel.NewListTask(tasks)
+	c.JSON(http.StatusOK, gin.H{
+		"data": resp,
+	})
+}

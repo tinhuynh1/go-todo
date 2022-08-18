@@ -19,6 +19,7 @@ func main() {
 		todo.DELETE("/:id", handler.DeleteById)
 		todo.PUT("/:id/done", handler.DoneTaskById)
 		todo.PUT("/:id/reject", handler.RejectTaskById)
+		todo.GET("/test", handler.TestOrm)
 	}
 	r.Run()
 }

@@ -47,3 +47,10 @@ func (task) RejectTaskById(id int) (err error) {
 	err = db.GetDB().Model(&model.Task{}).Where("id = ?", id).Update("status", RejectStatusTask).Error
 	return
 }
+
+func (task) GetTaskByStatusOrTitle() (task []model.Task, err error) {
+	title := "create CRUD 1"
+	status := "doing"
+	err = db.GetDB().Model(&model.Task{}).Where("title = ?", title).Or("status = ?", status).Find(&task).Error
+	return
+}

@@ -57,3 +57,11 @@ func RejectTaskById(id int) (err error) {
 	return
 
 }
+
+func TestOrm() (tasks []model.Task, err error) {
+	tasks, err = orm.Task.GetTaskByStatusOrTitle()
+	if err != nil {
+		return
+	}
+	return
+}
